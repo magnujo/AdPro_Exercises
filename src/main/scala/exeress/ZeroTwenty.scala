@@ -116,10 +116,11 @@ object ZeroTwenty extends App with ExercisesInterface {
 
   // Exercise 9
 
-  def reverse[A] (as: List[A]): List[A] = ???
+  def reverse[A] (as: List[A]): List[A] =
+    foldLeft(as, as) ((x,y) => Cons(y, x))
 
 
-
+print(reverse(List(1,2,3)))
 
   // Exercise 10
 
