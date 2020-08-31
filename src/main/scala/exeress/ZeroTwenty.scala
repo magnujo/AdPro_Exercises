@@ -88,11 +88,7 @@ object ZeroTwenty extends App with ExercisesInterface {
   // Exercise 7
   def foldLeft[A,B] (as: List[A], z: B) (f: (B, A) => B): B = as match {
     case Nil => z
-    case Cons (x,xs) =>
-      def loop(l: List[A], n: Int): B ={
-        f (foldLeft(xs, z) (f), x)
-      }
-      loop(xs,0)
+    case Cons (x,xs) => foldLeft(xs, f(z, x)) (f)
 
     }
 
