@@ -23,7 +23,16 @@ package exeress
 
 import jdk.nashorn.internal.ir.BreakableNode
 
+trait OrderedPoint extends scala.math.Ordered[java.awt.Point] {
 
+  this: java.awt.Point =>
+
+  override def compare(that: java.awt.Point): Int = {
+    if (this.x < that.x || this.x == that.x && this.y < that.y) -1
+    else if (this.x== that.x && this.y==that.y) 0
+    else 1
+  }
+}
 // Try the following (and similar) tests in the repl (sbt console):
 // val p = new java.awt.Point(0,1) with OrderedPoint
 // val q = new java.awt.Point(0,2) with OrderedPoint
@@ -77,12 +86,32 @@ object Tree extends App{
 
 
   def size1[A] (t: Tree[A]): Int =
-    fold(t) ((l: Int, r: Int) => l+r) (_ => 1)
+    fold(t) ((l: Int, r: Int) => l+r+1) (_ => 1)
 
   def maximum1 (t: Tree[Int]): Int =
     fold(t) ((l: Int, r: Int) => l max r) ((p: Int) => p)
 
-  def map1[A,B] (t: Tree[A]) (f: A=>B): Tree[B] =
-    fold(t) ((l: Tree[A], r: Tree[A]) => Branch(f(l), f(r))) ((p: A) => Leaf(f(p)))
+  def map1[A,B] (t: Tree[A]) (f: A=>B): Tree[B] = ???
+    //fold(t) ((l: Tree[B], r: Tree[B]) => Branch(l, r)) ((x:A) => Leaf(f(x)))
+
+
+  //map1(Branch(Leaf(1),Leaf(2))) x=> x+1
+  //fold(Branch(Leaf(1),Leaf(2)))
+  //f(fold(Leaf(1), fold(leaf(2) => f(leaf(2), leaf(3)) => Branch(Leaf(2), Leaf(3))
+  //fold(leaf(1) => g(1) = Leaf(2)
+  //fold(leaf(2) => g(2) = Leaf(3)
+
+  //map1(leaf(1)) x=> x+1
+  //fold(Leaf(1))
+  //Leaf(1) => g(1) => Leaf(2)
+
+  //map1((Branch(Branch(Leaf(1),Leaf(2)), Leaf(3))) x=> x+1)
+  //fold((Branch(Branch(Leaf(1),Leaf(2)), Leaf(3))
+  //f(fold(Branch(Leaf(1),Leaf(2)), fold(Leaf(3)) => f(Branch(Leaf(2), Leaf(3)), Leaf(4)) => Branch(Branch(Leaf(2), Leaf(3))), Leaf(4)
+  //fold(Leaf(3) => Leaf(4)
+  //fold(Branch(Leaf(1),Leaf(2))) => f(fold(Leaf(1), Leaf(2) => f(Leaf(2), Leaf(3) => Branch(Leaf(2), Leaf(3)
+  //fold(Leaf(1) => Leaf(2)
+  //fold(Leaf (2) => Leaf(3)
+
 
 }
