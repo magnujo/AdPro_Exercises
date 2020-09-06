@@ -25,7 +25,7 @@ import jdk.nashorn.internal.ir.BreakableNode
 
 trait OrderedPoint extends scala.math.Ordered[java.awt.Point] {
 
-  this: java.awt.Point =>
+  this: java.awt.Point => java.awt.Point
 
   override def compare(that: java.awt.Point): Int = {
     if (this.x < that.x || this.x == that.x && this.y < that.y) -1
@@ -37,6 +37,7 @@ trait OrderedPoint extends scala.math.Ordered[java.awt.Point] {
 // val p = new java.awt.Point(0,1) with OrderedPoint
 // val q = new java.awt.Point(0,2) with OrderedPoint
 // assert(p < q)
+
 
 sealed trait Tree[+A]
 case class Leaf[A] (value: A) extends Tree[A]
@@ -50,7 +51,7 @@ object Tree extends App{
 
   val t = new Branch[Int](Branch(Leaf(1),Leaf(2)), Leaf(3))
 
-  print(t)
+ // print(t)
 
 
   def size[A] (t :Tree[A]): Int = t match {
@@ -69,6 +70,9 @@ object Tree extends App{
 
 
 
+  val p = new java.awt.Point(0,1) with OrderedPoint
+  val q = new java.awt.Point(0,2) with OrderedPoint
+  assert(p < q)
 
   // Exercise 4
 
@@ -113,5 +117,56 @@ object Tree extends App{
   //fold(Leaf(1) => Leaf(2)
   //fold(Leaf (2) => Leaf(3)
 
+
+}
+
+sealed trait Option[+A] {
+
+  // Exercise 6
+
+  def map[B] (f: A=>B): Option[B] = ???
+
+
+  /**
+   * Ignore the arrow (=>) in default's type below for now.
+   * It prevents the argument "default" from being evaluated until it is needed.
+   * So it is not evaluated if we process a Some object (this is 'call-by-name'
+   * and we should talk about this soon).
+   */
+
+  def getOrElse[B >: A] (default: => B): B = ???
+
+  def flatMap[B] (f: A => Option[B]): Option[B] = ???
+
+  def filter (p: A => Boolean): Option[A] = ???
+
+}
+
+case class Some[+A] (get: A) extends Option[A]
+case object None extends Option[Nothing]
+
+object ExercisesOption {
+
+  // mean is implemented in Chapter 4 of the text book
+
+  def mean(xs: Seq[Double]): Option[Double] =
+    if (xs.isEmpty) None
+    else Some(xs.sum / xs.length)
+
+  // Exercise 7
+
+  def variance (xs: Seq[Double]): Option[Double] = ???
+
+  // Exercise 8
+
+  def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] = ???
+
+  // Exercise 9
+
+  def sequence[A] (aos: List[Option[A]]): Option[List[A]] = ???
+
+  // Exercise 10
+
+  def traverse[A,B] (as: List[A]) (f :A => Option[B]): Option[List[B]] = ???
 
 }
