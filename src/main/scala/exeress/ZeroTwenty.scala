@@ -25,7 +25,7 @@ object ZeroTwenty extends App with ExercisesInterface {
     loop(l, n)
   }
 
-  print(drop(List(1,2,3,4), 3))
+  //print(drop(List(1,2,3,4), 3))
 
   // Exercise 4
 
@@ -89,8 +89,9 @@ object ZeroTwenty extends App with ExercisesInterface {
   def foldLeft[A,B] (as: List[A], z: B) (f: (B, A) => B): B = as match {
     case Nil => z
     case Cons (x,xs) => foldLeft(xs, f(z, x)) (f)
-
     }
+
+  //foldLeft(Cons12Nil, f(Nil, 3)
 
  // print(foldLeft(List(1,2,3),0) ((y,x)=>y+x))
 
@@ -117,10 +118,11 @@ object ZeroTwenty extends App with ExercisesInterface {
   // Exercise 9
 
   def reverse[A] (as: List[A]): List[A] =
-    foldLeft(as, as) ((x,y) => Cons(y, x))
+    foldLeft(as, tail(as)) ((x,y) => Cons(y, x))
 
 
-print(reverse(List(1,2,3)))
+print(reverse(List(1,2,3,45,23)))
+
 
   // Exercise 10
 
