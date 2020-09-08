@@ -21,6 +21,7 @@
 
 package exeress
 
+import exeress.List.foldRight
 import jdk.nashorn.internal.ir.BreakableNode
 
 trait OrderedPoint extends scala.math.Ordered[java.awt.Point] {
@@ -134,9 +135,15 @@ sealed trait Option[+A] {
    * and we should talk about this soon).
    */
 
-  def getOrElse[B >: A] (default: => B): B = ???
+  def getOrElse[B >: A] (default: => B): B = this match {
+    case None => default
+    case Some(x) => x
+  }
 
-  def flatMap[B] (f: A => Option[B]): Option[B] = ???
+  def flatMap[B] (f: A => Option[B]): Option[B] = this match{
+    case None => None
+    case Some(x) => f(x)
+  }
 
   def filter (p: A => Boolean): Option[A] = ???
 
@@ -155,18 +162,48 @@ object ExercisesOption {
 
   // Exercise 7
 
-  def variance (xs: Seq[Double]): Option[Double] = ???
+  def variance (xs: Seq[Double]): Option[Double] = {
+    val m = mean(xs)
+    val mValue = m.getOrElse(1.0)
+    val newSeq: Seq[Double] = xs.map(x => math.pow(x - mValue: Double , 2))
+    mean(newSeq)
+  }
+
+  def variance2 (xs: Seq[Double]): Option[Double] = {
+    mean(xs).flatMap(m => mean(xs.map(x => math.pow(x-m, 2))))
+  }
 
   // Exercise 8
 
-  def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] = ???
+  def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] =
+    ao
+        .flatMap(x =>
+      bo.
+        flatMap(y =>
+        Some(f(x,y))))
+
+
+  //map2(Some(4), Some(5)) ((x,y)=> x+y)
+  //Some(4).flatMap(4=> Some(5).flatMap(5=> Some(4+5))
+  //Some(5).flatMap(5=> Some(4+5)
+
+  //Some(f(
 
   // Exercise 9
+  def foldRight[A,B] (as :List[A], z: B) (f : (A,B)=> B) :B = as match {
+    case Nil => z
+    case Cons (x,xs) => f (x, foldRight (xs,z) (f))
+  }
 
-  def sequence[A] (aos: List[Option[A]]): Option[List[A]] = ???
+
+  def sequence[A] (aos: List[Option[A]]): Option[List[A]] =
+    foldRight(aos, Some(Nil))((x,y) => x.flatMap(m => y.flatMap(u => Some(Cons(m,u)))))
 
   // Exercise 10
 
-  def traverse[A,B] (as: List[A]) (f :A => Option[B]): Option[List[B]] = ???
+  def traverse[A,B] (as: List[A]) (f :A => Option[B]): Option[List[B]] = {
+    sequence(as map f)
+  }
+
 
 }

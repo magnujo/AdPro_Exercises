@@ -62,10 +62,10 @@ object ZeroTwenty extends App with ExercisesInterface {
  // print(init(List(2,3,23,10)))
 
   // Exercise 6
-  def foldRight[A,B] (as :List[A], z: B) (f : (A,B)=> B) :B = as match {
-    case Nil => z
-    case Cons (x,xs) => f (x, foldRight (xs,z) (f))
-  }
+//  def foldRight[A,B] (as :List[A], z: B) (f : (A,B)=> B) :B = as match {
+//    case Nil => z
+//    case Cons (x,xs) => f (x, foldRight (xs,z) (f))
+//  }
 
   def length[A] (as: List[A]): Int = {
     foldRight(as, 0) ((x, y) => 1+y)
